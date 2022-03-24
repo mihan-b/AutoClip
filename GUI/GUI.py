@@ -12,5 +12,10 @@ class GUI(Frame):
         self.renamemodule = rename_box.label_box(self,"Enter Text")
         self.labelmodule.pack()
         self.renamemodule.pack(side = BOTTOM)
-    def text_UI_update(self, key):
-        self.renamemodule.update_text(self.dataset.datalist[key])
+    def text_UI_update(self, KVpair):
+        self.renamemodule.update_text(KVpair)
+    def update_data(self, KVpair):
+        self.dataset.modify_list(KVpair[0],KVpair[1])
+        self.labelmodule.dataframe.textupdate(KVpair[0],KVpair[1], keychange = False)
+        print(self.dataset.datalist)
+        print(self.labelmodule.keyframe.full_list)
