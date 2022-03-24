@@ -1,8 +1,6 @@
-~set1
-bruh moment
-test case
-what what
-what what
-okay meh
-~SET2
-A second list lol
+[shift+a+c] [accessibility]
+[a+d] [Advisory Committee for Persons with Disabilities]
+[c] [committee]
+[d] [disabilities]
+[s] [successfully]
+[@] [Best regards,\nJames LastName\nMcMaster University\n(905)525-9140]

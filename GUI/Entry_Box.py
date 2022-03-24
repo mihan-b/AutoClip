@@ -3,32 +3,34 @@ from tkinter import *
 from tkinter import ttk
 
 class Bbutton(Button):
-    def __init__(self, basis, txt, anchor_dir, x_pos):
-        Button.__init__(self,basis, text = txt, anchor = anchor_dir, command = self.callback)
-        self.x_pos = x_pos
+    def __init__(self, basis, txt, anchor_dir, key, dataref):
+        output = None
+        print(txt)
+        if len(txt) > 15:
+            output = txt[0:15] + "..."
+        Button.__init__(self,basis, text = output, anchor = anchor_dir, command = self.callback)
+        self.key = key
+        self.dataref = dataref
     def callback(self): #fuck callbacks all my homies hate callbacks
-        rename_box.text_UI_update(self.x_pos)
+        self.dataref.text_UI_update(self.key)
 
 class Vframe(Frame):
-    def __init__(self, basis, reference_list, index):
+    def __init__(self, basis, reference_list, dataref):
         Frame.__init__(self,basis)
-        self.Vref = []
-        self.Vlist = []
-        self.index = index
-        self.update(reference_list)
-    def update(self,reference_list):
-        for x in range(len(reference_list)):
-            self.Vref.append(reference_list[x][self.index])
-            self.Vlist.append(Bbutton(self, self.Vref[len(self.Vref)-1], W, x))
-            self.Vlist[len(self.Vlist)-1].pack(fill = X)
+        self.pack(LEFT)
+        self.dataref = dataref
+        self.reflist = reference_list
+        self.button_list = {}
+        self.update()
+    def update(self):
+        for term in self.reflist:
+            self.button_list[term] = Bbutton(self, term, S, self.dataref.datalist.keys(), self.dataref)
+            self.button_list[term].pack()
 
 class labelmodule(Scroll_Frame.VScrollFrame):
-    def __init__(self, basis, reference_list):
+    def __init__(self, basis, dataref):
         Scroll_Frame.VScrollFrame.__init__(self,basis)
+        self.dataref = dataref
         self.pack()
-        self.datalist = reference_list
-        #self.InnerFrame = Frame(self.interior).pack()
-        self.Vframe_list = []
-        for x in range(len(self.datalist[0])):
-            self.Vframe_list.append(Vframe(self.interior, self.datalist, x))
-            self.Vframe_list[len(self.Vframe_list)-1].pack(side = RIGHT)
+        self.keyframe = Vframe(self, dataref.datalist.keys(), self.dataref)
+        self.dataframe = Vframe(self, dataref.datalist.values(), self.dataref)

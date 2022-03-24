@@ -1,5 +1,4 @@
-from GUI import Entry_Box, rename_box
-from Storage import Entry_Storage
+from GUI import GUI
 #import Shortcut_V1
 from tkinter import *
 from tkinter import ttk
@@ -9,10 +8,7 @@ windll.shcore.SetProcessDpiAwareness(1)
 root = Tk()
 root.title("test program name")
 
-arr = Entry_Storage.StorageReader("test_entry.txt")
-
-e = Entry_Box.labelmodule(root, arr.datalist)
-rename_box.initialize(root)
-rename_box.database = arr
+e = GUI.GUI(root,"test_entry.txt")
+e.pack()
 
 root.mainloop()
