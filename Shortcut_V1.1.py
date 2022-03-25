@@ -11,6 +11,7 @@ onstate = False
 statearr = []
 statearredit = False
 interchangequeue = queue.Queue(20)
+UI_on = True
 
 root = Tk()
 root.title("test program name")
@@ -32,7 +33,7 @@ def time_out():
 def statearrappend():
     global statearr, onstate, interchangequeue, statearredit
     delete_timer = None
-    while(True):
+    while(UI_on):
         time.sleep(0.1)
         if not interchangequeue.empty():
             key = interchangequeue.get()
@@ -87,4 +88,13 @@ def regeneratelistener():
 
 hotkeychecker.start()
 state_arr_updater.start()
+
+def exit_function():
+    global root, hotkeychecker, UI_on
+    hotkeychecker.stop()
+    UI_on = False
+    root.destroy()
+
+root.protocol('WM_DELETE_WINDOW', exit_function)
+
 root.mainloop()
