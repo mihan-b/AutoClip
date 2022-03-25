@@ -94,6 +94,7 @@ def main():
                         # Paste from clipboard to cursor
                         with pyautogui.hold(paste_key()):
                             pyautogui.press(['v'])
+                        # Set errors to 0
                         errors = 0
 
 main()
