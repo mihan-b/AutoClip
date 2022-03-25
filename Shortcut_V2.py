@@ -4,6 +4,7 @@ import time
 import pyautogui
 import pyperclip
 import keyboard
+from playsound import playsound
 
 # Lists of shortcut inputs and outputs
 input_list =[
@@ -55,6 +56,7 @@ def copy_to_clip(txt):
 def main():
     while True:
         if keyboard.read_key() == "=":
+            playsound('/Users/mihanbandara/Downloads/notification.wav')
             print("Activated")
             #Always running
             while True:
