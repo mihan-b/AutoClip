@@ -56,7 +56,7 @@ def copy_to_clip(txt):
 def main():
     while True:
         if keyboard.read_key() == "=":
-            playsound('/Users/mihanbandara/Downloads/notification.wav')
+           # playsound('/Users/mihanbandara/Downloads/notification.wav')
             print("Activated")
             #Always running
             while True:
@@ -78,5 +78,7 @@ def main():
                         #Paste from clipboard to cursor
                         with pyautogui.hold(paste_key()):
                             pyautogui.press(['v'])
+                            break
+                        break
 
 main()
