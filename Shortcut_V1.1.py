@@ -7,14 +7,10 @@ from tkinter import *
 
 keyboardentry = keyboard.Controller()
 
-
-
 onstate = False 
 statearr = []
 statearredit = False
 interchangequeue = queue.Queue(20)
-
-
 
 root = Tk()
 root.title("test program name")
@@ -40,7 +36,7 @@ def statearrappend():
         time.sleep(0.1)
         if not interchangequeue.empty():
             key = interchangequeue.get()
-            if key == keyboard.Key.esc:
+            if str(key) == "'='":
                 print(onstate)
                 onstate = not onstate
                 if onstate == False:
@@ -78,7 +74,7 @@ def print_values(list_dict):
     if comparator in list_dict:
         print(list_dict[comparator])
         hotkeychecker.stop() #kill the listener so that we dont lag out from reading our typed text
-        keyboardentry.type(list_dict[comparator])
+        keyboardentry.type("\b"*(len(comparator)+2) + list_dict[comparator]) #press backspace enough times to delete the shortcut, and the activation keys, then type the text
         regeneratelistener()
 
 hotkeychecker = keyboard.Listener(on_press=add_key_to_queue)
@@ -87,8 +83,8 @@ state_arr_updater = Thread(target = statearrappend)
 def regeneratelistener():
     global hotkeychecker
     hotkeychecker = keyboard.Listener(on_press=add_key_to_queue)
+    hotkeychecker.start()
 
-#adAdvisory Committee for Persons with Disabilities
 hotkeychecker.start()
 state_arr_updater.start()
 root.mainloop()
