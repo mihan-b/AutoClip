@@ -16,7 +16,7 @@ UI_on = True #variable to check if the UI is open
 root = Tk()
 root.title("test program name")
 
-e = GUI.GUI(root,"test_entry.txt")
+e = GUI.GUI(root,"entries.data", "01503")
 e.pack()
 
 #Note: we assume that a timeout doesnt lead to any output
@@ -34,16 +34,15 @@ def statearrappend():
     global statearr, onstate, interchangequeue, statearredit
     delete_timer = None
     while(UI_on):
-        time.sleep(0.1) 
         if not interchangequeue.empty(): #if there are terms in the key reading queue yet to be processed
             key = interchangequeue.get()
             if str(key) == "'='": #if key is activation key
-                print(onstate)
-                onstate = not onstate
+              #  print(onstate)
+                onstate = not onstate #toggle of state
                 if onstate == False: #if we were reading the key combo before this press
                     print_values(e.dataset.datalist) 
                     delete_timer.cancel() #cancels the 5 sec timer as we finished the statement
-                else:
+                else: #if we have begun the on state
                     delete_timer = Timer(5, time_out) #starts up timer, which calls time_out after 5 sec
                 continue #continue to prevent counting the activation key in the list holding the key combo
             if (onstate):
@@ -51,7 +50,7 @@ def statearrappend():
                     if (statearredit == False):
                         statearredit = True
                         statearr.append(clean_key(key))
-                        print(statearr)
+                      #  print(statearr)
                         statearredit = False
                         break
                 continue
@@ -69,14 +68,14 @@ def clean_key(key):
 
 def print_values(list_dict):
     global statearr, keyboardentry, hotkeychecker
-    comparator = tuple(statearr) #cast to tuple because dictionary must have tuple keys
-    print(comparator)
+    comparator = tuple(statearr) #cast to tuple because dictionary uses tuple keys
+   # print(comparator)
     statearr = []
     if comparator in list_dict:
-        print(list_dict[comparator])
-        hotkeychecker.stop() #kill the listener so that we dont fill up interchangequeue and lag the typing out while waiting for stateappend to process all the keys
+       # print(list_dict[comparator])
+        hotkeychecker.stop() #kill the listener to prevent recursive pasting from reading a pasted text which can be read as a command
         keyboardentry.type("\b"*(len(comparator)+2) + list_dict[comparator]) #press backspace enough times to delete the shortcut, and the activation keys, then type the text
-        regeneratelistener() #unkill the listener so we can read other entries
+        regeneratelistener() #unkill the listener afterwards, without the pasted text ever in the key press buffer
 
 hotkeychecker = keyboard.Listener(on_press=add_key_to_queue)
 state_arr_updater = Thread(target = statearrappend)
@@ -94,6 +93,7 @@ def exit_function():
     hotkeychecker.stop()
     UI_on = False
     root.destroy()
+
 
 root.protocol('WM_DELETE_WINDOW', exit_function)
 
