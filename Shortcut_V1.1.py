@@ -10,7 +10,7 @@ keyboardentry = keyboard.Controller() #keyboard entry instance
 onstate = False #combo reading activation state
 statearr = [] #list of characters for combo
 statearredit = False #if statearr is being edited
-interchangequeue = queue.Queue(20) #multi-thread accessable queue for buffering key presses
+interchangequeue = queue.Queue(-1) #multi-thread accessable queue for buffering key presses
 UI_on = True #variable to check if the UI is open
 
 root = Tk()
@@ -27,15 +27,17 @@ def time_out():
         if (statearredit == False):
             statearredit = True
             statearr = [] #if timeout, reset the stored characters
-            statearredit = False
-            return
+            statearredit = False 
+        return
 
 def statearrappend():
     global statearr, onstate, interchangequeue, statearredit
     delete_timer = None
     while(UI_on):
+        time.sleep(0.05)
         if not interchangequeue.empty(): #if there are terms in the key reading queue yet to be processed
             key = interchangequeue.get()
+          #  print(key)
             if str(key) == "'='": #if key is activation key
               #  print(onstate)
                 onstate = not onstate #toggle of state
@@ -43,7 +45,8 @@ def statearrappend():
                     print_values(e.dataset.datalist) 
                     delete_timer.cancel() #cancels the 5 sec timer as we finished the statement
                 else: #if we have begun the on state
-                    delete_timer = Timer(5, time_out) #starts up timer, which calls time_out after 5 sec
+                    delete_timer = Timer(5.0, time_out) #starts up timer, which calls time_out after 5 sec
+                    delete_timer.start()
                 continue #continue to prevent counting the activation key in the list holding the key combo
             if (onstate):
                 while(True): #wait for list to be safe to edit
@@ -94,7 +97,5 @@ def exit_function():
     UI_on = False
     root.destroy()
 
-
 root.protocol('WM_DELETE_WINDOW', exit_function)
-
 root.mainloop()

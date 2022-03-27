@@ -13,10 +13,15 @@ class StorageReader:
         reader.close()
       #  self.output_to_text()
     def modify_list(self, key, value):
-        if key in self.datalist.keys(): #if key exists 
-            if value in self.datalist.values(): #if value exists, thus, we are changing it's key
-                self.datalist.pop(key) #remove existing key
-            self.datalist[key] = value #if new key, new set of terms, if old key, update value
+        V_in_list = value in self.datalist.values()
+        if V_in_list and not key in self.datalist.keys(): #if value exists, thus, we are changing it's key
+            for k, v in self.full_list.items():
+                if value == v:
+                    self.datalist.pop(k) #if same value, remove 
+                    break
+        self.datalist[key] = value #if existing key, update it, if new key, assign new entry
+        #note: changing the key with the same value may cause entry misallignment with the VFrame entry order.
+        #Changes should only lead to different positions of entries between program restarts, though it might cause problems
     def output_to_text(self):
         reader = open(self.dataname, "w")
         sumoutput = ""
