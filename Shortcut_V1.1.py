@@ -5,7 +5,8 @@ import queue
 from GUI import GUI
 from tkinter import *
 from playsound import playsound
-
+from ctypes import windll
+windll.shcore.SetProcessDpiAwareness(1)
 
 keyboardentry = keyboard.Controller() #keyboard entry instance
 
@@ -30,7 +31,7 @@ def time_out():
             statearredit = True
             statearr = [] #if timeout, reset the stored characters
             statearredit = False 
-            Tempsoundthread = Thread(target = playsound, args = ['notification2.wav']).start()
+            Thread(target = playsound, args = ['notification2.wav']).start()
         return
 
 def statearrappend():
@@ -46,11 +47,11 @@ def statearrappend():
                 onstate = not onstate #toggle of state
                 if onstate == False: #if we were reading the key combo before this press
                     print_values(e.dataset.datalist)
-                    Tempsoundthread = Thread(target = playsound, args = ['notification2.wav']).start()
+                    Thread(target = playsound, args = ['notification2.wav']).start()
                     delete_timer.cancel() #cancels the 5 sec timer as we finished the statement
                 else: #if we have begun the on state
                     delete_timer = Timer(5.0, time_out) #starts up timer, which calls time_out after 5 sec
-                    Tempsoundthread = Thread(target = playsound, args = ['notification.wav']).start()
+                    Thread(target = playsound, args = ['notification.wav']).start()
                     delete_timer.start()
                 continue #continue to prevent counting the activation key in the list holding the key combo
             if (onstate):
