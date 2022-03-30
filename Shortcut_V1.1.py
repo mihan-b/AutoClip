@@ -4,6 +4,8 @@ from pynput import keyboard
 import queue
 from GUI import GUI
 from tkinter import *
+from playsound import playsound
+
 
 keyboardentry = keyboard.Controller() #keyboard entry instance
 
@@ -28,6 +30,7 @@ def time_out():
             statearredit = True
             statearr = [] #if timeout, reset the stored characters
             statearredit = False 
+            Tempsoundthread = Thread(target = playsound, args = ['notification2.wav']).start()
         return
 
 def statearrappend():
@@ -42,10 +45,12 @@ def statearrappend():
               #  print(onstate)
                 onstate = not onstate #toggle of state
                 if onstate == False: #if we were reading the key combo before this press
-                    print_values(e.dataset.datalist) 
+                    print_values(e.dataset.datalist)
+                    Tempsoundthread = Thread(target = playsound, args = ['notification2.wav']).start()
                     delete_timer.cancel() #cancels the 5 sec timer as we finished the statement
                 else: #if we have begun the on state
                     delete_timer = Timer(5.0, time_out) #starts up timer, which calls time_out after 5 sec
+                    Tempsoundthread = Thread(target = playsound, args = ['notification.wav']).start()
                     delete_timer.start()
                 continue #continue to prevent counting the activation key in the list holding the key combo
             if (onstate):
@@ -53,7 +58,7 @@ def statearrappend():
                     if (statearredit == False):
                         statearredit = True
                         statearr.append(clean_key(key))
-                      #  print(statearr)
+                      #  print(statearr)=
                         statearredit = False
                         break
                 continue
@@ -74,6 +79,7 @@ def print_values(list_dict):
     comparator = tuple(statearr) #cast to tuple because dictionary uses tuple keys
    # print(comparator)
     statearr = []
+    #EDGE CASE YET TO BE ADDRESSED: INPUT MAY INCLUDE KEYS WHICH ARE NOT BACKSPACED(e.g shift)
     if comparator in list_dict:
        # print(list_dict[comparator])
         hotkeychecker.stop() #kill the listener to prevent recursive pasting from reading a pasted text which can be read as a command
