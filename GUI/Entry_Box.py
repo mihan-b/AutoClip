@@ -39,7 +39,10 @@ class Vframe(Frame):
     def updatevalue(self,data):
         self.button_list[tuple(data[0])].update_text(data[1],data)
     def append_term(self,data):
-        self.button_list[data[0]] = Bbutton(self, data[0], S, data, self.ref_GUI, output_restrict=not self.iskey)
+        if (self.iskey):
+            self.button_list[data[0]] = Bbutton(self, data[0], S, data, self.ref_GUI, output_restrict=not self.iskey)
+        else:
+            self.button_list[data[0]] = Bbutton(self, data[1], S, data, self.ref_GUI, output_restrict=not self.iskey)
         self.button_list[data[0]].pack(side= BOTTOM, fill= X)
 class labelmodule(Scroll_Frame.VScrollFrame):
     def __init__(self, basis, dataref):
@@ -58,5 +61,5 @@ class labelmodule(Scroll_Frame.VScrollFrame):
         elif is_existing_value:
             self.keyframe.updatekey(datachange)
         else:
-            self.keyframe.append_term()
-            self.dataframe.append_term()
+            self.keyframe.append_term(datachange)
+            self.dataframe.append_term(datachange)

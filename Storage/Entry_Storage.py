@@ -15,7 +15,7 @@ class StorageReader:
     def modify_list(self, key, value):
         V_in_list = value in self.datalist.values()
         if V_in_list and not key in self.datalist.keys(): #if value exists, thus, we are changing it's key
-            for k, v in self.full_list.items():
+            for k, v in self.datalist.items():
                 if value == v:
                     self.datalist.pop(k) #if same value, remove 
                     break

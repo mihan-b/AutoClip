@@ -51,7 +51,7 @@ class keyupdatebox(Toplevel):
     def append_term(self, newchar):
         self.textvar.set(self.textvar.get() + " " + newchar)
     def close(self):
-        self.basis.update_data(tuple(self.textvar.get().split(" ")))
+        self.basis.update_data(tuple(self.textvar.get().split(" ")[1:]))
         self.destroy()
 
 class keyinputbox(Frame):
@@ -71,3 +71,4 @@ class keyinputbox(Frame):
     def update_data(self, data):
         self.ref_GUI.ref_GUI.Combo_Edit_Flag = False
         self.ref_GUI.data[0] = data
+        self.update_text([data,0])

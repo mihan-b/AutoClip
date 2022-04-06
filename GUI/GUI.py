@@ -18,5 +18,5 @@ class GUI(Frame):
     def text_UI_update(self, KVpair):
         self.renamemodule.update_text(KVpair)
     def update_data(self, KVpair):
-        self.dataset.modify_list(KVpair[0],KVpair[1])
         self.labelmodule.data_update(KVpair)
+        self.dataset.modify_list(KVpair[0],KVpair[1])
