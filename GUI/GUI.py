@@ -11,8 +11,8 @@ class GUI(Frame):
         self.dataset = Entry_Storage.StorageReader(filename, key)
         self.labelmodule = Entry_Box.labelmodule(self,self.dataset)
         self.renamemodule = rename_box.label_box(self,"Enter Text")
-        self.labelmodule.pack()
-        self.renamemodule.pack(side = BOTTOM)
+        self.labelmodule.pack(padx = 10, pady = 10)
+        self.renamemodule.pack(side = BOTTOM, pady= 15)
         self.soundtogglestate = True
         self.root = basis
     def text_UI_update(self, KVpair):

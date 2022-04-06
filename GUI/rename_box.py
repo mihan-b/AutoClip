@@ -10,11 +10,11 @@ class label_box(Frame):
         self.header = Label(self.topframe, text=f'{name}')
         self.header.pack(side =LEFT, padx = 5)
         self.textbox = Entry(self)
-        self.textbox.pack(side =BOTTOM)
+        self.textbox.pack()
         self.updatebutton = Button(self.topframe, text = "Save", command=self.callback)
         self.updatebutton.pack(side =RIGHT)
         self.rekey_module = keyinputbox(self)
-        self.rekey_module.pack()
+        self.rekey_module.pack(side = BOTTOM)
         self.ref_GUI = basis
         self.data = [None,None]
     def callback(self):
@@ -29,14 +29,14 @@ class label_box(Frame):
 class info_frame(Frame):
     def __init__(self, basis):
         Frame.__init__(self,basis)
-        self.L_data = StringVar()
-      #  self.R_data = StringVar()
-        self.Ltxt = Label(self, textvariable = self.L_data)
-       # self.Rtxt = Label(self, textvariable = self.R_data)
+        self.L_data = "Current Combo:"
+        self.R_data = StringVar(value="None")
+        self.Ltxt = Label(self, text = self.L_data)
+        self.Rtxt = Label(self, textvariable = self.R_data)
         self.Ltxt.pack(side = LEFT)
-      #  self.Rtxt.pack(side = RIGHT)
+        self.Rtxt.pack(side = RIGHT)
     def update_text(self, KVlist):
-        self.L_data.set(KVlist[0])
+        self.R_data.set(KVlist[0])
        # self.R_data.set(KVlist[1])
 
 class keyupdatebox(Toplevel):
