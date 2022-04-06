@@ -15,6 +15,8 @@ statearr = [] #list of characters for combo
 statearredit = False #if statearr is being edited
 interchangequeue = queue.Queue(-1) #multi-thread accessable queue for buffering key presses
 UI_on = True #variable to check if the UI is open
+prog_halt_state = False
+delete_timer = None
 
 root = Tk()
 root.title("test program name")
@@ -24,50 +26,63 @@ e.pack()
 
 #Note: we assume that a timeout doesnt lead to any output
 def time_out():
-    global onstate, statearr, statearredit
+    global onstate, statearr, statearredit, e
     onstate = False
     while(True): #wait for list to be safe to edit
         if (statearredit == False):
             statearredit = True
             statearr = [] #if timeout, reset the stored characters
             statearredit = False 
-            Thread(target = playsound, args = ['notification2.wav']).start()
+            if e.soundtogglestate: 
+                Thread(target = playsound, args = ['notification2.wav']).start()
         return
 
 def statearrappend():
-    global statearr, onstate, interchangequeue, statearredit
-    delete_timer = None
-    while(UI_on):
-        time.sleep(0.05)
-        if not interchangequeue.empty(): #if there are terms in the key reading queue yet to be processed
-            key = interchangequeue.get()
+    global statearr, onstate, interchangequeue, statearredit, e, prog_halt_state, delete_timer
+  #  while(UI_on):
+    if not interchangequeue.empty(): #if there are terms in the key reading queue yet to be processed
+        key = interchangequeue.get()
           #  print(key)
-            if str(key) == "'='": #if key is activation key
+        if prog_halt_state:
+                onstate = False
+                statearr = []
+                return
+        if str(key) == "'='": #if key is activation key
               #  print(onstate)
-                onstate = not onstate #toggle of state
-                if onstate == False: #if we were reading the key combo before this press
-                    print_values(e.dataset.datalist)
+            onstate = not onstate #toggle of state
+            if onstate == False: #if we were reading the key combo before this press
+                if e.soundtogglestate:
                     Thread(target = playsound, args = ['notification2.wav']).start()
                     delete_timer.cancel() #cancels the 5 sec timer as we finished the statement
-                else: #if we have begun the on state
-                    delete_timer = Timer(5.0, time_out) #starts up timer, which calls time_out after 5 sec
+                    print_values(e.dataset.datalist)
+            else: #if we have begun the on state
+                delete_timer = Timer(5.0, time_out) #starts up timer, which calls time_out after 5 sec
+                if e.soundtogglestate:
                     Thread(target = playsound, args = ['notification.wav']).start()
-                    delete_timer.start()
-                continue #continue to prevent counting the activation key in the list holding the key combo
-            if (onstate):
-                while(True): #wait for list to be safe to edit
-                    if (statearredit == False):
-                        statearredit = True
-                        statearr.append(clean_key(key))
-                      #  print(statearr)=
-                        statearredit = False
-                        break
-                continue
+                delete_timer.start()
+                return #continue to prevent counting the activation key in the list holding the key combo
+        if (onstate):
+            while(True): #wait for list to be safe to edit
+                if (statearredit == False):
+                    statearredit = True
+                    statearr.append(clean_key(key))
+                        #  print(statearr)=
+                    statearredit = False
+                    break
+                return
+
+def readstringset():
+    key = interchangequeue.get()
+    e.renamemodule.rekey_module.update_box.append_term(clean_key(key))
 
 def add_key_to_queue(key):
-    global interchangequeue
-    interchangequeue.put(key) #add key to buffer, this is done to minimize processing time inside the key press reading thread to reduce lag
-
+    global interchangequeue, UI_on, e
+    if UI_on:
+        interchangequeue.put(key) #add key to buffer, this is done to minimize processing time inside the key press reading thread to reduce lag
+        if e.Combo_Edit_Flag:
+            Thread(target = readstringset).start()
+        else:
+            Thread(target = statearrappend).start()
 def clean_key(key):
     cleankey = str(key)
     if cleankey[0] == "'" : #when you cast a char key datatype to string, the output string has its own quotation marks. This checks for that
@@ -78,7 +93,7 @@ def clean_key(key):
 def print_values(list_dict):
     global statearr, keyboardentry, hotkeychecker
     comparator = tuple(statearr) #cast to tuple because dictionary uses tuple keys
-   # print(comparator)
+    print(statearr)
     statearr = []
     #EDGE CASE YET TO BE ADDRESSED: INPUT MAY INCLUDE KEYS WHICH ARE NOT BACKSPACED(e.g shift)
     if comparator in list_dict:
@@ -88,7 +103,7 @@ def print_values(list_dict):
         regeneratelistener() #unkill the listener afterwards, without the pasted text ever in the key press buffer
 
 hotkeychecker = keyboard.Listener(on_press=add_key_to_queue)
-state_arr_updater = Thread(target = statearrappend)
+#state_arr_updater = Thread(target = statearrappend)
 
 def regeneratelistener():
     global hotkeychecker
@@ -96,7 +111,7 @@ def regeneratelistener():
     hotkeychecker.start()
 
 hotkeychecker.start()
-state_arr_updater.start()
+#state_arr_updater.start()
 
 def exit_function():
     global root, hotkeychecker, UI_on

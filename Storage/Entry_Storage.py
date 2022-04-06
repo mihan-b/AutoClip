@@ -20,6 +20,7 @@ class StorageReader:
                     self.datalist.pop(k) #if same value, remove 
                     break
         self.datalist[key] = value #if existing key, update it, if new key, assign new entry
+        print(self.datalist)
         #note: changing the key with the same value may cause entry misallignment with the VFrame entry order.
         #Changes should only lead to different positions of entries between program restarts, though it might cause problems
     def output_to_text(self):

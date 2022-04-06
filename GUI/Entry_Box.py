@@ -50,7 +50,7 @@ class labelmodule(Scroll_Frame.VScrollFrame):
         self.dataframe = Vframe(self.interior, dataref.datalist, self.ref_GUI, iskey = False, )
         self.keyframe.pack(side = LEFT)
         self.dataframe.pack(side= LEFT)
-    def data_update(self, datachange):
+    def data_update(self, datachange): #TO BE FIXED: CANNOT DETECT NEW ENTRY PROPERLY B/C THE DATABASE IT IS CHECKING HAS ALREADY UPDATED FOR NEW KEY
         is_existing_key = tuple(datachange[0]) in self.dataref.datalist.keys()
         is_existing_value = datachange[1] in self.dataref.datalist.values()
         if is_existing_key:
